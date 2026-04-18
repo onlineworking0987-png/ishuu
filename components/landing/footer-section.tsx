@@ -77,8 +77,8 @@ export function FooterSection() {
                 href="mailto:hello@ishuu.com"
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
-                <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Mail size={14} stroke="white" />
+                <div className="icon-white w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                  <Mail size={14} />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1 break-all">
                   hello@<span >ishuu</span>.com
@@ -90,8 +90,8 @@ export function FooterSection() {
                 href="tel:+1234567890"
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
-                <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Phone size={14} stroke="white" />
+                <div className="icon-white w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                  <Phone size={14} />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                   +92 302 6914619        </span>
@@ -99,8 +99,8 @@ export function FooterSection() {
 
               {/* Address */}
               <div className="flex items-start gap-2.5 text-white/75">
-                <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 flex items-center justify-center">
-                  <MapPin size={14} stroke="white" />
+                <div className="icon-white w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 flex items-center justify-center">
+                  <MapPin size={14} />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                
@@ -115,8 +115,8 @@ export function FooterSection() {
                 rel="noopener noreferrer"
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
-                <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Linkedin size={14} stroke="white" />
+                <div className="icon-white w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                  <Linkedin size={14} />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                   LinkedIn
