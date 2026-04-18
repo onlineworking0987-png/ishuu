@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,8 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { chewy } from "@/lib/font-chewy";
-import { cn } from "@/lib/utils";
 
 const services = [
   { id: "website-design", label: "Website design" },
@@ -27,82 +31,240 @@ const services = [
   { id: "other", label: "Other" },
 ];
 
-const teamSizes = [
-  { value: "1-10", label: "1-10 people" },
-  { value: "11-50", label: "11-50 people" },
-  { value: "51-200", label: "51-200 people" },
-  { value: "201-500", label: "201-500 people" },
-  { value: "500+", label: "500+ people" },
-];
-
-const locations = [
-  { value: "us", label: "United States", flag: "🇺🇸" },
-  { value: "uk", label: "United Kingdom", flag: "🇬🇧" },
-  { value: "ca", label: "Canada", flag: "🇨🇦" },
-  { value: "au", label: "Australia", flag: "🇦🇺" },
-  { value: "nz", label: "New Zealand", flag: "🇳🇿" },
-  { value: "de", label: "Germany", flag: "🇩🇪" },
-  { value: "fr", label: "France", flag: "🇫🇷" },
-  { value: "other", label: "Other", flag: "🌍" },
+const countries = [
+  { value: "af", label: "Afghanistan" },
+  { value: "al", label: "Albania" },
+  { value: "dz", label: "Algeria" },
+  { value: "ad", label: "Andorra" },
+  { value: "ao", label: "Angola" },
+  { value: "ag", label: "Antigua and Barbuda" },
+  { value: "ar", label: "Argentina" },
+  { value: "am", label: "Armenia" },
+  { value: "au", label: "Australia" },
+  { value: "at", label: "Austria" },
+  { value: "az", label: "Azerbaijan" },
+  { value: "bs", label: "Bahamas" },
+  { value: "bh", label: "Bahrain" },
+  { value: "bd", label: "Bangladesh" },
+  { value: "bb", label: "Barbados" },
+  { value: "by", label: "Belarus" },
+  { value: "be", label: "Belgium" },
+  { value: "bz", label: "Belize" },
+  { value: "bj", label: "Benin" },
+  { value: "bt", label: "Bhutan" },
+  { value: "bo", label: "Bolivia" },
+  { value: "ba", label: "Bosnia and Herzegovina" },
+  { value: "bw", label: "Botswana" },
+  { value: "br", label: "Brazil" },
+  { value: "bn", label: "Brunei" },
+  { value: "bg", label: "Bulgaria" },
+  { value: "bf", label: "Burkina Faso" },
+  { value: "bi", label: "Burundi" },
+  { value: "cv", label: "Cabo Verde" },
+  { value: "kh", label: "Cambodia" },
+  { value: "cm", label: "Cameroon" },
+  { value: "ca", label: "Canada" },
+  { value: "cf", label: "Central African Republic" },
+  { value: "td", label: "Chad" },
+  { value: "cl", label: "Chile" },
+  { value: "cn", label: "China" },
+  { value: "co", label: "Colombia" },
+  { value: "km", label: "Comoros" },
+  { value: "cg", label: "Congo" },
+  { value: "cr", label: "Costa Rica" },
+  { value: "hr", label: "Croatia" },
+  { value: "cu", label: "Cuba" },
+  { value: "cy", label: "Cyprus" },
+  { value: "cz", label: "Czech Republic" },
+  { value: "dk", label: "Denmark" },
+  { value: "dj", label: "Djibouti" },
+  { value: "dm", label: "Dominica" },
+  { value: "do", label: "Dominican Republic" },
+  { value: "ec", label: "Ecuador" },
+  { value: "eg", label: "Egypt" },
+  { value: "sv", label: "El Salvador" },
+  { value: "gq", label: "Equatorial Guinea" },
+  { value: "er", label: "Eritrea" },
+  { value: "ee", label: "Estonia" },
+  { value: "sz", label: "Eswatini" },
+  { value: "et", label: "Ethiopia" },
+  { value: "fj", label: "Fiji" },
+  { value: "fi", label: "Finland" },
+  { value: "fr", label: "France" },
+  { value: "ga", label: "Gabon" },
+  { value: "gm", label: "Gambia" },
+  { value: "ge", label: "Georgia" },
+  { value: "de", label: "Germany" },
+  { value: "gh", label: "Ghana" },
+  { value: "gr", label: "Greece" },
+  { value: "gd", label: "Grenada" },
+  { value: "gt", label: "Guatemala" },
+  { value: "gn", label: "Guinea" },
+  { value: "gw", label: "Guinea-Bissau" },
+  { value: "gy", label: "Guyana" },
+  { value: "ht", label: "Haiti" },
+  { value: "hn", label: "Honduras" },
+  { value: "hu", label: "Hungary" },
+  { value: "is", label: "Iceland" },
+  { value: "in", label: "India" },
+  { value: "id", label: "Indonesia" },
+  { value: "ir", label: "Iran" },
+  { value: "iq", label: "Iraq" },
+  { value: "ie", label: "Ireland" },
+  { value: "il", label: "Israel" },
+  { value: "it", label: "Italy" },
+  { value: "jm", label: "Jamaica" },
+  { value: "jp", label: "Japan" },
+  { value: "jo", label: "Jordan" },
+  { value: "kz", label: "Kazakhstan" },
+  { value: "ke", label: "Kenya" },
+  { value: "ki", label: "Kiribati" },
+  { value: "kp", label: "Korea, North" },
+  { value: "kr", label: "Korea, South" },
+  { value: "kw", label: "Kuwait" },
+  { value: "kg", label: "Kyrgyzstan" },
+  { value: "la", label: "Laos" },
+  { value: "lv", label: "Latvia" },
+  { value: "lb", label: "Lebanon" },
+  { value: "ls", label: "Lesotho" },
+  { value: "lr", label: "Liberia" },
+  { value: "ly", label: "Libya" },
+  { value: "li", label: "Liechtenstein" },
+  { value: "lt", label: "Lithuania" },
+  { value: "lu", label: "Luxembourg" },
+  { value: "mg", label: "Madagascar" },
+  { value: "mw", label: "Malawi" },
+  { value: "my", label: "Malaysia" },
+  { value: "mv", label: "Maldives" },
+  { value: "ml", label: "Mali" },
+  { value: "mt", label: "Malta" },
+  { value: "mh", label: "Marshall Islands" },
+  { value: "mr", label: "Mauritania" },
+  { value: "mu", label: "Mauritius" },
+  { value: "mx", label: "Mexico" },
+  { value: "fm", label: "Micronesia" },
+  { value: "md", label: "Moldova" },
+  { value: "mc", label: "Monaco" },
+  { value: "mn", label: "Mongolia" },
+  { value: "me", label: "Montenegro" },
+  { value: "ma", label: "Morocco" },
+  { value: "mz", label: "Mozambique" },
+  { value: "mm", label: "Myanmar" },
+  { value: "na", label: "Namibia" },
+  { value: "nr", label: "Nauru" },
+  { value: "np", label: "Nepal" },
+  { value: "nl", label: "Netherlands" },
+  { value: "nz", label: "New Zealand" },
+  { value: "ni", label: "Nicaragua" },
+  { value: "ne", label: "Niger" },
+  { value: "ng", label: "Nigeria" },
+  { value: "mk", label: "North Macedonia" },
+  { value: "no", label: "Norway" },
+  { value: "om", label: "Oman" },
+  { value: "pk", label: "Pakistan" },
+  { value: "pw", label: "Palau" },
+  { value: "pa", label: "Panama" },
+  { value: "pg", label: "Papua New Guinea" },
+  { value: "py", label: "Paraguay" },
+  { value: "pe", label: "Peru" },
+  { value: "ph", label: "Philippines" },
+  { value: "pl", label: "Poland" },
+  { value: "pt", label: "Portugal" },
+  { value: "qa", label: "Qatar" },
+  { value: "ro", label: "Romania" },
+  { value: "ru", label: "Russia" },
+  { value: "rw", label: "Rwanda" },
+  { value: "kn", label: "Saint Kitts and Nevis" },
+  { value: "lc", label: "Saint Lucia" },
+  { value: "vc", label: "Saint Vincent and the Grenadines" },
+  { value: "ws", label: "Samoa" },
+  { value: "sm", label: "San Marino" },
+  { value: "st", label: "Sao Tome and Principe" },
+  { value: "sa", label: "Saudi Arabia" },
+  { value: "sn", label: "Senegal" },
+  { value: "rs", label: "Serbia" },
+  { value: "sc", label: "Seychelles" },
+  { value: "sl", label: "Sierra Leone" },
+  { value: "sg", label: "Singapore" },
+  { value: "sk", label: "Slovakia" },
+  { value: "si", label: "Slovenia" },
+  { value: "sb", label: "Solomon Islands" },
+  { value: "so", label: "Somalia" },
+  { value: "za", label: "South Africa" },
+  { value: "ss", label: "South Sudan" },
+  { value: "es", label: "Spain" },
+  { value: "lk", label: "Sri Lanka" },
+  { value: "sd", label: "Sudan" },
+  { value: "sr", label: "Suriname" },
+  { value: "se", label: "Sweden" },
+  { value: "ch", label: "Switzerland" },
+  { value: "sy", label: "Syria" },
+  { value: "tw", label: "Taiwan" },
+  { value: "tj", label: "Tajikistan" },
+  { value: "tz", label: "Tanzania" },
+  { value: "th", label: "Thailand" },
+  { value: "tl", label: "Timor-Leste" },
+  { value: "tg", label: "Togo" },
+  { value: "to", label: "Tonga" },
+  { value: "tt", label: "Trinidad and Tobago" },
+  { value: "tn", label: "Tunisia" },
+  { value: "tr", label: "Turkey" },
+  { value: "tm", label: "Turkmenistan" },
+  { value: "tv", label: "Tuvalu" },
+  { value: "ug", label: "Uganda" },
+  { value: "ua", label: "Ukraine" },
+  { value: "ae", label: "United Arab Emirates" },
+  { value: "gb", label: "United Kingdom" },
+  { value: "us", label: "United States" },
+  { value: "uy", label: "Uruguay" },
+  { value: "uz", label: "Uzbekistan" },
+  { value: "vu", label: "Vanuatu" },
+  { value: "va", label: "Vatican City" },
+  { value: "ve", label: "Venezuela" },
+  { value: "vn", label: "Vietnam" },
+  { value: "ye", label: "Yemen" },
+  { value: "zm", label: "Zambia" },
+  { value: "zw", label: "Zimbabwe" },
 ];
 
 const countryCodes = [
-  { value: "us", label: "+1", flag: "🇺🇸" },
-  { value: "uk", label: "+44", flag: "🇬🇧" },
-  { value: "au", label: "+61", flag: "🇦🇺" },
-  { value: "nz", label: "+64", flag: "🇳🇿" },
-  { value: "de", label: "+49", flag: "🇩🇪" },
-];
-
-const timeSlots = [
-  "9:00 AM",
-  "9:30 AM",
-  "10:00 AM",
-  "10:30 AM",
-  "11:00 AM",
-  "11:30 AM",
-  "2:00 PM",
-  "2:30 PM",
-  "3:00 PM",
-  "3:30 PM",
-  "4:00 PM",
-  "4:30 PM",
-];
-
-// Calendar helper functions
-const getDaysInMonth = (year: number, month: number) => {
-  return new Date(year, month + 1, 0).getDate();
-};
-
-const getFirstDayOfMonth = (year: number, month: number) => {
-  const day = new Date(year, month, 1).getDay();
-  // Convert Sunday = 0 to Monday = 0
-  return day === 0 ? 6 : day - 1;
-};
-
-const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  { value: "us", label: "+1", flag: "US" },
+  { value: "uk", label: "+44", flag: "UK" },
+  { value: "au", label: "+61", flag: "AU" },
+  { value: "nz", label: "+64", flag: "NZ" },
+  { value: "de", label: "+49", flag: "DE" },
+  { value: "in", label: "+91", flag: "IN" },
+  { value: "pk", label: "+92", flag: "PK" },
+  { value: "cn", label: "+86", flag: "CN" },
+  { value: "jp", label: "+81", flag: "JP" },
+  { value: "fr", label: "+33", flag: "FR" },
 ];
 
 export default function ContactPage() {
-  const [step, setStep] = useState<"form" | "calendar">("form");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [locationSearch, setLocationSearch] = useState("");
+  const [locationOpen, setLocationOpen] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    teamSize: "",
+    organizationName: "",
+    jobTitle: "",
+    numberOfEmployees: "",
     location: "",
     countryCode: "us",
     phoneNumber: "",
     message: "",
   });
+
+  const filteredCountries = useMemo(() => {
+    if (!locationSearch) return countries;
+    return countries.filter((country) =>
+      country.label.toLowerCase().includes(locationSearch.toLowerCase())
+    );
+  }, [locationSearch]);
 
   const handleServiceToggle = (serviceId: string) => {
     setSelectedServices((prev) =>
@@ -116,52 +278,22 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleLocationSelect = (value: string) => {
+    handleInputChange("location", value);
+    setLocationOpen(false);
+    setLocationSearch("");
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("calendar");
-  };
-
-  const handlePrevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
-  };
-
-  const handleDateSelect = (day: number) => {
-    const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (newDate >= today) {
-      setSelectedDate(newDate);
-    }
-  };
-
-  const handleFinalSubmit = () => {
-    // Handle final submission
-    console.log("Form submitted:", { formData, selectedServices, selectedDate, selectedTime });
+    // Handle form submission
+    console.log("Form submitted:", { formData, selectedServices });
     // You would typically send this to an API here
   };
 
-  // Generate calendar days
-  const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth();
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDay = getFirstDayOfMonth(year, month);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const calendarDays = [];
-  // Add empty cells for days before the first day of the month
-  for (let i = 0; i < firstDay; i++) {
-    calendarDays.push(null);
-  }
-  // Add the days of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    calendarDays.push(day);
-  }
+  const selectedCountryLabel = countries.find(
+    (c) => c.value === formData.location
+  )?.label;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -184,336 +316,239 @@ export default function ContactPage() {
       </header>
 
       <main className="pt-24 pb-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            {/* Left Column - Form */}
-            <div className={cn(
-              "transition-opacity duration-300",
-              step === "calendar" && "lg:opacity-50"
-            )}>
-              <div className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-serif italic text-gray-900 mb-3">
-                  Get in touch
-                </h1>
-                <p className="text-gray-600 text-lg">
-                  {"Let's chat about how our expert team can help."}
-                </p>
-              </div>
-
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                {/* Name Fields */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                      First name
-                    </Label>
-                    <Input
-                      id="firstName"
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      className="bg-white border-gray-200 focus:border-brand-pink"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                      Last name
-                    </Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Last name"
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
-                      className="bg-white border-gray-200 focus:border-brand-pink"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@company.com"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="bg-white border-gray-200 focus:border-brand-pink"
-                    required
-                  />
-                </div>
-
-                {/* Team Size & Location */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
-                      Team size
-                    </Label>
-                    <Select
-                      value={formData.teamSize}
-                      onValueChange={(value) => handleInputChange("teamSize", value)}
-                    >
-                      <SelectTrigger className="bg-white border-gray-200 w-full">
-                        <SelectValue placeholder="1-50 people" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {teamSizes.map((size) => (
-                          <SelectItem key={size.value} value={size.value}>
-                            {size.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
-                      Location
-                    </Label>
-                    <Select
-                      value={formData.location}
-                      onValueChange={(value) => handleInputChange("location", value)}
-                    >
-                      <SelectTrigger className="bg-white border-gray-200 w-full">
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations.map((loc) => (
-                          <SelectItem key={loc.value} value={loc.value}>
-                            <span className="flex items-center gap-2">
-                              <span>{loc.flag}</span>
-                              <span>{loc.label}</span>
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Phone Number */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
-                    Phone number
-                  </Label>
-                  <div className="flex gap-2">
-                    <Select
-                      value={formData.countryCode}
-                      onValueChange={(value) => handleInputChange("countryCode", value)}
-                    >
-                      <SelectTrigger className="bg-white border-gray-200 w-28">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countryCodes.map((code) => (
-                          <SelectItem key={code.value} value={code.value}>
-                            <span className="flex items-center gap-1">
-                              <span>{code.flag}</span>
-                              <span>{code.label}</span>
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="tel"
-                      placeholder="+64 (210) 000-0000"
-                      value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-                      className="bg-white border-gray-200 focus:border-brand-pink flex-1"
-                    />
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="text-sm font-medium text-gray-700">
-                    Message
-                  </Label>
-                  <Textarea
-                    id="message"
-                    placeholder="Leave us a message..."
-                    value={formData.message}
-                    onChange={(e) => handleInputChange("message", e.target.value)}
-                    className="bg-white border-gray-200 focus:border-brand-pink min-h-[120px] resize-none"
-                  />
-                </div>
-
-                {/* Services */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700">
-                    Services
-                  </Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {services.map((service) => (
-                      <div key={service.id} className="flex items-center gap-3">
-                        <Checkbox
-                          id={service.id}
-                          checked={selectedServices.includes(service.id)}
-                          onCheckedChange={() => handleServiceToggle(service.id)}
-                          className="border-gray-300 data-[state=checked]:bg-brand-pink data-[state=checked]:border-brand-pink"
-                        />
-                        <Label
-                          htmlFor={service.id}
-                          className="text-sm text-gray-600 cursor-pointer"
-                        >
-                          {service.label}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-md py-6"
-                >
-                  Send message
-                </Button>
-              </form>
-            </div>
-
-            {/* Right Column - Calendar */}
-            <div className={cn(
-              "transition-all duration-500",
-              step === "form" ? "opacity-50 pointer-events-none" : "opacity-100"
-            )}>
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 lg:p-8 sticky top-28">
-                {/* Calendly-style banner */}
-                <div className="absolute -top-0 -right-0 overflow-hidden w-24 h-24">
-                  <div className="absolute transform rotate-45 bg-gray-700 text-white text-[10px] font-medium py-1 px-8 right-[-35px] top-[20px]">
-                    Powered by
-                    <br />
-                    ishuu
-                  </div>
-                </div>
-
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                  Select a Date & Time
-                </h2>
-
-                {/* Month Navigation */}
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-lg text-gray-700">
-                    {monthNames[month]} {year}
-                  </span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handlePrevMonth}
-                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                      <ChevronLeft size={18} className="!text-gray-600 !stroke-gray-600" />
-                    </button>
-                    <button
-                      onClick={handleNextMonth}
-                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                      <ChevronRight size={18} className="!text-gray-600 !stroke-gray-600" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Calendar Grid */}
-                <div className="mb-6">
-                  {/* Weekday headers */}
-                  <div className="grid grid-cols-7 gap-1 mb-2">
-                    {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((day) => (
-                      <div
-                        key={day}
-                        className="text-center text-xs font-medium text-gray-500 py-2"
-                      >
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Calendar days */}
-                  <div className="grid grid-cols-7 gap-1">
-                    {calendarDays.map((day, index) => {
-                      if (day === null) {
-                        return <div key={`empty-${index}`} className="aspect-square" />;
-                      }
-
-                      const dateToCheck = new Date(year, month, day);
-                      dateToCheck.setHours(0, 0, 0, 0);
-                      const isPast = dateToCheck < today;
-                      const isSelected = selectedDate?.getDate() === day && 
-                                        selectedDate?.getMonth() === month &&
-                                        selectedDate?.getFullYear() === year;
-                      const isWeekend = (index % 7) >= 5;
-
-                      return (
-                        <button
-                          key={day}
-                          onClick={() => !isPast && handleDateSelect(day)}
-                          disabled={isPast}
-                          className={cn(
-                            "aspect-square flex items-center justify-center text-sm rounded-full transition-all",
-                            isPast && "text-gray-300 cursor-not-allowed",
-                            !isPast && !isSelected && "text-gray-700 hover:bg-brand-pink/10",
-                            !isPast && !isSelected && isWeekend && "text-gray-400",
-                            isSelected && "bg-brand-pink text-white font-medium"
-                          )}
-                        >
-                          {day}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Timezone */}
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-6 pb-6 border-b border-gray-100">
-                  <Globe size={16} className="!text-gray-500 !stroke-gray-500" />
-                  <span>Central European Time (08:24)</span>
-                  <ChevronRight size={14} className="!text-gray-400 !stroke-gray-400 rotate-90" />
-                </div>
-
-                {/* Time Slots */}
-                {selectedDate && (
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-gray-700">
-                      Available times for {selectedDate.toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}
-                    </h3>
-                    <div className="grid grid-cols-3 gap-2">
-                      {timeSlots.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() => setSelectedTime(time)}
-                          className={cn(
-                            "py-2 px-3 text-sm rounded-md border transition-all",
-                            selectedTime === time
-                              ? "bg-brand-pink text-white border-brand-pink"
-                              : "border-gray-200 text-gray-700 hover:border-brand-pink hover:text-brand-pink"
-                          )}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Confirm Button */}
-                {selectedDate && selectedTime && (
-                  <Button
-                    onClick={handleFinalSubmit}
-                    className="w-full mt-6 bg-brand-pink hover:bg-brand-pink/90 text-white rounded-md py-6"
-                  >
-                    Confirm Booking
-                  </Button>
-                )}
-              </div>
-            </div>
+        <div className="max-w-xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-serif italic text-gray-900 mb-3">
+              Get in touch
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {"Let's chat about how our expert team can help."}
+            </p>
           </div>
+
+          <form onSubmit={handleFormSubmit} className="space-y-6">
+            {/* Name Fields */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                  First name
+                </Label>
+                <Input
+                  id="firstName"
+                  placeholder="First name"
+                  value={formData.firstName}
+                  onChange={(e) => handleInputChange("firstName", e.target.value)}
+                  className="bg-white border-gray-200 focus:border-brand-pink"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                  Last name
+                </Label>
+                <Input
+                  id="lastName"
+                  placeholder="Last name"
+                  value={formData.lastName}
+                  onChange={(e) => handleInputChange("lastName", e.target.value)}
+                  className="bg-white border-gray-200 focus:border-brand-pink"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@company.com"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                className="bg-white border-gray-200 focus:border-brand-pink"
+                required
+              />
+            </div>
+
+            {/* Organization Name */}
+            <div className="space-y-2">
+              <Label htmlFor="organizationName" className="text-sm font-medium text-gray-700">
+                Organization name
+              </Label>
+              <Input
+                id="organizationName"
+                placeholder="Your company or organization"
+                value={formData.organizationName}
+                onChange={(e) => handleInputChange("organizationName", e.target.value)}
+                className="bg-white border-gray-200 focus:border-brand-pink"
+              />
+            </div>
+
+            {/* Job Title */}
+            <div className="space-y-2">
+              <Label htmlFor="jobTitle" className="text-sm font-medium text-gray-700">
+                Job title
+              </Label>
+              <Input
+                id="jobTitle"
+                placeholder="Your role or position"
+                value={formData.jobTitle}
+                onChange={(e) => handleInputChange("jobTitle", e.target.value)}
+                className="bg-white border-gray-200 focus:border-brand-pink"
+              />
+            </div>
+
+            {/* No. of Employees & Location */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="numberOfEmployees" className="text-sm font-medium text-gray-700">
+                  No. of employees
+                </Label>
+                <Input
+                  id="numberOfEmployees"
+                  type="number"
+                  placeholder="e.g. 50"
+                  value={formData.numberOfEmployees}
+                  onChange={(e) => handleInputChange("numberOfEmployees", e.target.value)}
+                  className="bg-white border-gray-200 focus:border-brand-pink"
+                  min="1"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">
+                  Location
+                </Label>
+                <Popover open={locationOpen} onOpenChange={setLocationOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={locationOpen}
+                      className="w-full justify-between bg-white border-gray-200 font-normal text-left hover:bg-gray-50"
+                    >
+                      {selectedCountryLabel || "Select country"}
+                      <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[280px] p-0" align="start">
+                    <div className="p-2 border-b border-gray-100">
+                      <Input
+                        placeholder="Search country..."
+                        value={locationSearch}
+                        onChange={(e) => setLocationSearch(e.target.value)}
+                        className="h-9 border-gray-200"
+                      />
+                    </div>
+                    <div className="max-h-[200px] overflow-y-auto">
+                      {filteredCountries.length === 0 ? (
+                        <div className="py-6 text-center text-sm text-gray-500">
+                          No country found.
+                        </div>
+                      ) : (
+                        filteredCountries.map((country) => (
+                          <button
+                            key={country.value}
+                            type="button"
+                            onClick={() => handleLocationSelect(country.value)}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 transition-colors flex items-center gap-2"
+                          >
+                            {country.label}
+                            {formData.location === country.value && (
+                              <span className="ml-auto text-brand-pink">✓</span>
+                            )}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            {/* Phone Number */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-gray-700">
+                Phone number
+              </Label>
+              <div className="flex gap-2">
+                <Select
+                  value={formData.countryCode}
+                  onValueChange={(value) => handleInputChange("countryCode", value)}
+                >
+                  <SelectTrigger className="bg-white border-gray-200 w-28">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((code) => (
+                      <SelectItem key={code.value} value={code.value}>
+                        <span className="flex items-center gap-1">
+                          <span className="text-xs text-gray-500">{code.flag}</span>
+                          <span>{code.label}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  type="tel"
+                  placeholder="(210) 000-0000"
+                  value={formData.phoneNumber}
+                  onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                  className="bg-white border-gray-200 focus:border-brand-pink flex-1"
+                />
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="space-y-2">
+              <Label htmlFor="message" className="text-sm font-medium text-gray-700">
+                Message
+              </Label>
+              <Textarea
+                id="message"
+                placeholder="Leave us a message..."
+                value={formData.message}
+                onChange={(e) => handleInputChange("message", e.target.value)}
+                className="bg-white border-gray-200 focus:border-brand-pink min-h-[120px] resize-none"
+              />
+            </div>
+
+            {/* Services */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-gray-700">
+                Services
+              </Label>
+              <div className="grid grid-cols-2 gap-3">
+                {services.map((service) => (
+                  <div key={service.id} className="flex items-center gap-3">
+                    <Checkbox
+                      id={service.id}
+                      checked={selectedServices.includes(service.id)}
+                      onCheckedChange={() => handleServiceToggle(service.id)}
+                      className="border-gray-300 data-[state=checked]:bg-brand-pink data-[state=checked]:border-brand-pink"
+                    />
+                    <Label
+                      htmlFor={service.id}
+                      className="text-sm text-gray-600 cursor-pointer"
+                    >
+                      {service.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-md py-6"
+            >
+              Send message
+            </Button>
+          </form>
         </div>
       </main>
     </div>
