@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
@@ -44,7 +43,7 @@ The buck stops with you> Oh you fail? It's on you.`,
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
   },
   {
-    quote: "Work on your business, not in it. Begin hiring people. Don’t just hire for technical skills, hire for the things you can’t teach. You should be focusing on growth strategies, not the day to day. Take this from someone who has tried and failed so many times.",
+    quote: "Work on your business, not in it. Begin hiring people. Don't just hire for technical skills, hire for the things you can't teach. You should be focusing on growth strategies, not the day to day. Take this from someone who has tried and failed so many times.",
     author: "Skill2scale",
     role: "Data Lead",
     company: "Nova Dynamics",
@@ -71,7 +70,7 @@ The buck stops with you> Oh you fail? It's on you.`,
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
   },
   {
-    quote: `Just because you can do it, doesn’t mean you should.
+    quote: `Just because you can do it, doesn't mean you should.
 If you were to outsource it, could you spend your time on something else that would bring in more money than you are paying the outsourced programmer?
 `,
     author: "Raethril",
@@ -82,7 +81,7 @@ If you were to outsource it, could you spend your time on something else that wo
     image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&crop=face",
   },
   {
-    quote: `Being patient with myself and growing the business at a pace that’s mentally, physically, and emotionally healthy for me. Sure, I know exactly what I need to do to achieve 5x sales of my flagship product. But, that also means 5x customer service, 5x picking and packing, 5x influx of social media engagement, 5x the storage space/workspace and most importantly 5x more capacitated myself.
+    quote: `Being patient with myself and growing the business at a pace that's mentally, physically, and emotionally healthy for me. Sure, I know exactly what I need to do to achieve 5x sales of my flagship product. But, that also means 5x customer service, 5x picking and packing, 5x influx of social media engagement, 5x the storage space/workspace and most importantly 5x more capacitated myself.
 `,
     author: "The_fitertainer",
     role: "Product Manager",
@@ -92,7 +91,7 @@ If you were to outsource it, could you spend your time on something else that wo
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
   },
   {
-    quote: `Once you've got the spider in the glass and the cardboard underneath, it's always annoying getting to the window and finding it shut, simply put “you need more hands”`,
+    quote: `Once you've got the spider in the glass and the cardboard underneath, it's always annoying getting to the window and finding it shut, simply put "you need more hands"`,
     author: "Watchkeys",
     role: "CIO",
     company: "Atlas Ventures",
@@ -112,37 +111,50 @@ If you were to outsource it, could you spend your time on something else that wo
 ];
 
 export function ProblemSection() {
-  const [rotationAngle, setRotationAngle] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
   const { ref: sectionRef, isInView: sectionInView } = useScrollAnimation();
+  const autoRotateTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const anglePerProfile = 37.5; // degrees between each profile (50% more than 25)
   const totalProfiles = testimonials.length;
+  
+  // Calculate rotation angle from activeIndex
+  const rotationAngle = activeIndex * anglePerProfile;
 
-  // Smooth continuous rotation animation
+  // Handle clicking on a navigation dot
+  const handleDotClick = useCallback((index: number) => {
+    setActiveIndex(index);
+    setIsAutoRotating(false);
+    
+    // Resume auto-rotation after 5 seconds
+    if (autoRotateTimerRef.current) {
+      clearTimeout(autoRotateTimerRef.current);
+    }
+    autoRotateTimerRef.current = setTimeout(() => {
+      setIsAutoRotating(true);
+    }, 5000);
+  }, []);
+
+  // Auto-rotation effect
   useEffect(() => {
-    let animationFrame: number;
-    let lastTime = performance.now();
-    const speed = 0.008; // degrees per millisecond (slow rotation)
+    if (!isAutoRotating) return;
     
-    const animate = (currentTime: number) => {
-      const deltaTime = currentTime - lastTime;
-      
-      setRotationAngle((prev) => {
-        const newAngle = prev + (deltaTime * speed);
-        // Reset after full rotation to prevent overflow
-        return newAngle % (totalProfiles * anglePerProfile);
-      });
-      
-      lastTime = currentTime;
-      animationFrame = requestAnimationFrame(animate);
-    };
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % totalProfiles);
+    }, 4000); // Rotate every 4 seconds
     
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [totalProfiles, anglePerProfile]);
+    return () => clearInterval(interval);
+  }, [isAutoRotating, totalProfiles]);
 
-  // Calculate which testimonial is currently active (closest to center)
-  const activeIndex = Math.round(rotationAngle / anglePerProfile) % totalProfiles;
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoRotateTimerRef.current) {
+        clearTimeout(autoRotateTimerRef.current);
+      }
+    };
+  }, []);
 
   // Calculate position on semi-circle arc for each profile
   const getArcPosition = (profileIndex: number) => {
@@ -232,7 +244,7 @@ export function ProblemSection() {
                 {testimonials.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => handleDotClick(index)}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === activeIndex 
                         ? 'w-6 bg-brand-red' 
