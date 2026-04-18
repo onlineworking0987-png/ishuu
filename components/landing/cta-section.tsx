@@ -42,7 +42,7 @@ export function CtaSection() {
               size="lg"
               className="bg-brand-pink hover:bg-brand-pink/90 text-white rounded-full px-10 py-6 text-lg group"
             >
-              <Link href="https://cal.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <Link href="/contact" className="flex items-center gap-2">
                 Book the Intake Call
                 <ArrowRight
                   size={20}
