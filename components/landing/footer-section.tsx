@@ -78,7 +78,7 @@ export function FooterSection() {
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
                 <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Mail size={14} />
+                  <Mail size={14} className="text-white" />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1 break-all">
                   hello@<span >ishuu</span>.com
@@ -91,7 +91,7 @@ export function FooterSection() {
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
                 <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Phone size={14} />
+                  <Phone size={14} className="text-white" />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                   +92 302 6914619        </span>
@@ -100,7 +100,7 @@ export function FooterSection() {
               {/* Address */}
               <div className="flex items-start gap-2.5 text-white/75">
                 <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 flex items-center justify-center">
-                  <MapPin size={14} />
+                  <MapPin size={14} className="text-white" />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                
@@ -116,7 +116,7 @@ export function FooterSection() {
                 className="group flex items-start gap-2.5 text-white/75 hover:text-white transition-colors"
               >
                 <div className="w-[34px] h-[34px] shrink-0 rounded-lg bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                  <Linkedin size={14} />
+                  <Linkedin size={14} className="text-white" />
                 </div>
                 <span className="text-[13.5px] leading-snug pt-1">
                   LinkedIn
