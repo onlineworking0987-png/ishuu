@@ -318,7 +318,7 @@ export default function ContactPage() {
       <main className="pt-24 pb-16 px-6">
         <div className="max-w-xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-serif italic text-gray-900 mb-3">
+            <h1 className="text-3xl md:text-4xl font-serif italic text-brand-red mb-3">
               Get in touch
             </h1>
             <p className="text-gray-600 text-lg">
@@ -544,7 +544,7 @@ export default function ContactPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-md py-6"
+              className="w-full gradient-brand hover:opacity-90 text-white rounded-md py-6 shadow-lg shadow-brand-red/25"
             >
               Send message
             </Button>
