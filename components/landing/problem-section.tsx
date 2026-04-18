@@ -122,7 +122,7 @@ export function ProblemSection() {
   useEffect(() => {
     let animationFrame: number;
     let lastTime = performance.now();
-    const speed = 0.0048; // degrees per millisecond (60% of original speed)
+    const speed = 0.00192; // degrees per millisecond (40% of previous speed)
     
     const animate = (currentTime: number) => {
       const deltaTime = currentTime - lastTime;
