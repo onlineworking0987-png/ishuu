@@ -312,7 +312,7 @@ export default function ContactPage() {
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium text-brand-red">
+                <Label htmlFor="firstName" className="text-sm font-medium text-gray-900">
                   First name
                 </Label>
                 <Input
@@ -325,7 +325,7 @@ export default function ContactPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium text-brand-red">
+                <Label htmlFor="lastName" className="text-sm font-medium text-gray-900">
                   Last name
                 </Label>
                 <Input
@@ -341,7 +341,7 @@ export default function ContactPage() {
 
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-brand-red">
+              <Label htmlFor="email" className="text-sm font-medium text-gray-900">
                 Email
               </Label>
               <Input
@@ -357,7 +357,7 @@ export default function ContactPage() {
 
             {/* Organization Name */}
             <div className="space-y-2">
-              <Label htmlFor="organizationName" className="text-sm font-medium text-brand-red">
+              <Label htmlFor="organizationName" className="text-sm font-medium text-gray-900">
                 Organization name
               </Label>
               <Input
@@ -371,7 +371,7 @@ export default function ContactPage() {
 
             {/* Job Title */}
             <div className="space-y-2">
-              <Label htmlFor="jobTitle" className="text-sm font-medium text-brand-red">
+              <Label htmlFor="jobTitle" className="text-sm font-medium text-gray-900">
                 Job title
               </Label>
               <Input
@@ -386,7 +386,7 @@ export default function ContactPage() {
             {/* No. of Employees & Location */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="numberOfEmployees" className="text-sm font-medium text-brand-red">
+                <Label htmlFor="numberOfEmployees" className="text-sm font-medium text-gray-900">
                   No. of employees
                 </Label>
                 <Input
@@ -400,7 +400,7 @@ export default function ContactPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-brand-red">
+                <Label className="text-sm font-medium text-gray-900">
                   Location
                 </Label>
                 <Popover open={locationOpen} onOpenChange={setLocationOpen}>
@@ -452,7 +452,7 @@ export default function ContactPage() {
 
             {/* Telephone */}
             <div className="space-y-2">
-              <Label htmlFor="telephone" className="text-sm font-medium text-brand-red">
+              <Label htmlFor="telephone" className="text-sm font-medium text-gray-900">
                 Telephone
               </Label>
               <Input
@@ -470,7 +470,7 @@ export default function ContactPage() {
 
             {/* Message */}
             <div className="space-y-2">
-              <Label htmlFor="message" className="text-sm font-medium text-brand-red">
+              <Label htmlFor="message" className="text-sm font-medium text-gray-900">
                 Message
               </Label>
               <Textarea
@@ -484,7 +484,7 @@ export default function ContactPage() {
 
             {/* Services */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-brand-red">
+              <Label className="text-sm font-medium text-gray-900">
                 Services
               </Label>
               <div className="grid grid-cols-2 gap-3">
