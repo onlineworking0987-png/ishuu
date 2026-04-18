@@ -8,13 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   Popover,
   PopoverContent,
@@ -227,18 +221,7 @@ const countries = [
   { value: "zw", label: "Zimbabwe" },
 ];
 
-const countryCodes = [
-  { value: "us", label: "+1", flag: "US" },
-  { value: "uk", label: "+44", flag: "UK" },
-  { value: "au", label: "+61", flag: "AU" },
-  { value: "nz", label: "+64", flag: "NZ" },
-  { value: "de", label: "+49", flag: "DE" },
-  { value: "in", label: "+91", flag: "IN" },
-  { value: "pk", label: "+92", flag: "PK" },
-  { value: "cn", label: "+86", flag: "CN" },
-  { value: "jp", label: "+81", flag: "JP" },
-  { value: "fr", label: "+33", flag: "FR" },
-];
+
 
 export default function ContactPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -254,7 +237,6 @@ export default function ContactPage() {
     jobTitle: "",
     numberOfEmployees: "",
     location: "",
-    countryCode: "us",
     phoneNumber: "",
     message: "",
   });
@@ -468,38 +450,22 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Phone Number */}
+            {/* Telephone */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-brand-red">
-                Phone number
+              <Label htmlFor="telephone" className="text-sm font-medium text-brand-red">
+                Telephone
               </Label>
-              <div className="flex gap-2">
-                <Select
-                  value={formData.countryCode}
-                  onValueChange={(value) => handleInputChange("countryCode", value)}
-                >
-                  <SelectTrigger className="bg-white border-gray-200 w-28">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryCodes.map((code) => (
-                      <SelectItem key={code.value} value={code.value}>
-                        <span className="flex items-center gap-1">
-                          <span className="text-xs text-gray-500">{code.flag}</span>
-                          <span>{code.label}</span>
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  type="tel"
-                  placeholder="(210) 000-0000"
-                  value={formData.phoneNumber}
-                  onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-                  className="bg-white border-gray-200 focus:border-brand-pink flex-1"
-                />
-              </div>
+              <Input
+                id="telephone"
+                type="tel"
+                placeholder="+12101234567"
+                value={formData.phoneNumber}
+                onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                className="bg-white border-gray-200 focus:border-brand-pink"
+              />
+              <p className="text-xs text-gray-500">
+                Include country code, no spaces or brackets (e.g., +12101234567)
+              </p>
             </div>
 
             {/* Message */}
