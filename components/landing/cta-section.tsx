@@ -58,10 +58,9 @@ export function CtaSection() {
           {/* Right Side - Description */}
           <div className="lg:w-1/3 text-center lg:text-right">
             <p className="text-lg md:text-xl text-white/90 leading-relaxed">
-              We only partner with founders when we can guarantee a considerable
+              We only partner with businesses when we can guarantee a considerable
               return to their investment. This conversation is purely to stress-test
-              the fit. We value your time as much as our own, no chasing, just a
-              mutual decision on the path forward.
+              the fit.
             </p>
           </div>
         </div>
