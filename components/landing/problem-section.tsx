@@ -122,7 +122,7 @@ export function ProblemSection() {
   useEffect(() => {
     let animationFrame: number;
     let lastTime = performance.now();
-    const speed = 0.008; // degrees per millisecond (slow rotation)
+    const speed = 0.00192; // degrees per millisecond (40% of previous speed)
     
     const animate = (currentTime: number) => {
       const deltaTime = currentTime - lastTime;
@@ -142,7 +142,14 @@ export function ProblemSection() {
   }, [totalProfiles, anglePerProfile]);
 
   // Calculate which testimonial is currently active (closest to center)
-  const activeIndex = Math.round(rotationAngle / anglePerProfile) % totalProfiles;
+  const calculatedActiveIndex = Math.round(rotationAngle / anglePerProfile) % totalProfiles;
+  
+  // Function to navigate to a specific testimonial by clicking indicator
+  const navigateToTestimonial = (index: number) => {
+    setRotationAngle(index * anglePerProfile);
+  };
+  
+  const activeIndex = calculatedActiveIndex;
 
   // Calculate position on semi-circle arc for each profile
   const getArcPosition = (profileIndex: number) => {
@@ -232,7 +239,7 @@ export function ProblemSection() {
                 {testimonials.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => navigateToTestimonial(index)}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === activeIndex 
                         ? 'w-6 bg-brand-red' 
