@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { inter, jetbrainsMono, playfairDisplay } from '@/lib/fonts'
 import { chewy } from '@/lib/font-chewy'
+import { SonnerToaster } from "@/components/providers/sonner-toaster"
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${chewy.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable} font-sans antialiased`}>
         {children}
+        <SonnerToaster />
         <Analytics />
       </body>
     </html>

@@ -1,10 +1,12 @@
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
+import { MarqueeSection } from "@/components/landing/marquee-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { ResponsibilitySection } from "@/components/landing/responsibility-section";
 import { ScopeSection } from "@/components/landing/scope-section";
 import { CollaborationSection } from "@/components/landing/collaboration-section";
 import { CapacitySection } from "@/components/landing/capacity-section";
+import { TrustedBySection } from "@/components/landing/trusted-by-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { ProcessSection } from "@/components/landing/process-section";
 import { CtaSection } from "@/components/landing/cta-section";
@@ -16,12 +18,16 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       
+      {/* Scrolling capabilities marquee - middle ground between hero and problem */}
+      <MarqueeSection />
+      
       {/* Content flows seamlessly from hero video */}
       <ProblemSection />
       <ResponsibilitySection />
       <ScopeSection />
       <CollaborationSection />
       <CapacitySection />
+      <TrustedBySection />
       <PricingSection />
       <ProcessSection />
       

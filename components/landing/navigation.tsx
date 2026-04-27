@@ -87,7 +87,7 @@ export function Navigation() {
               size="sm"
               className="relative bg-brand-red hover:bg-brand-red/90 text-white rounded-full px-5 overflow-hidden group btn-ripple"
             >
-              <Link href="#cta" className="flex items-center gap-2">
+              <Link href="/contact" className="flex items-center gap-2">
                 <span>Book a Call</span>
                 <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
@@ -135,7 +135,7 @@ export function Navigation() {
             asChild
             className="bg-brand-red hover:bg-brand-red/90 text-white rounded-full w-full mt-3"
           >
-            <Link href="#cta" className="flex items-center justify-center gap-2">
+            <Link href="/contact" className="flex items-center justify-center gap-2">
               Book a Call
               <ArrowRight size={14} />
             </Link>
